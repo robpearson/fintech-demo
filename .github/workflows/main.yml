@@ -44,6 +44,7 @@ jobs:
         
         with:
           version: ${{ env.PACKAGE_VERSION }}
+          branch: ${{ github.head_ref || github.ref_name }} 
           packages: |
             OctoFX.TradingWebsite
           
