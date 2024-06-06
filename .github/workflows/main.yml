@@ -1,0 +1,56 @@
+name: Main CI 
+
+on:
+  push:
+    branches:    
+      - 'main'      # main branch
+      - 'FINT-'     # Feature branches
+      - 'rp-'       # Rob Pearson demo branches
+
+env:
+  OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+  OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+  OCTOPUS_SPACE: ${{ secrets.OCTOPUS_SPACE }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set Version
+        run: echo "PACKAGE_VERSION=$(date +'%Y.%m.%d').$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+
+      - name: Package Frontend Changes
+        uses: OctopusDeploy/create-zip-package-action@v3.0.2
+        with:
+          package_id: octopayments-frontend
+          version: ${{ env.PACKAGE_VERSION }}
+          base_path: .
+          files: |
+           **/*
+          output_folder: ./packaging
+
+      # - name: Push Packages and Containers
+      #   uses: OctopusDeploy/push-package-action@v3.0.4
+      #   with:
+      #     packages: |
+      #       ./packaging/octofx..${{ env.PACKAGE_VERSION }}.zip
+
+      - name: Push Build Information
+        uses: OctopusDeploy/push-build-information-action@v3
+        
+        with:
+          version: ${{ env.PACKAGE_VERSION }}
+          packages: |
+            OctoFX.TradingWebsite
+          
+      - name: Create Octopus Release
+        uses: OctopusDeploy/create-release-action@v3
+        with: 
+          project: OctoFX
+          release_number: ${{ env.PACKAGE_VERSION }}
+          git_ref: ${{ github.head_ref || github.ref_name }} 
+        
