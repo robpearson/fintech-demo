@@ -3,7 +3,7 @@ name: Main CI
 on:
   push:
     branches:    
-      - 'main'      # main branch
+      - 'main'        # main branch
       - 'FINT-**'     # Feature branches
       - 'rp-**'       # Rob Pearson demo branches
 
@@ -21,23 +21,23 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Set Version
-        run: echo "PACKAGE_VERSION=3.0.$((GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=2.10.$((610+GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
 
       - name: Package Frontend Changes
         uses: OctopusDeploy/create-zip-package-action@v3.0.2
         with:
-          package_id: octopayments-frontend
+          package_id: OctoFX.TradingWebsite
           version: ${{ env.PACKAGE_VERSION }}
           base_path: .
           files: |
            **/*
           output_folder: ./packaging
 
-      # - name: Push Packages and Containers
-      #   uses: OctopusDeploy/push-package-action@v3.0.4
-      #   with:
-      #     packages: |
-      #       ./packaging/octofx..${{ env.PACKAGE_VERSION }}.zip
+      - name: Push Packages and Containers
+        uses: OctopusDeploy/push-package-action@v3.0.4
+        with:
+          packages: |
+            ./packaging/OctoFX.TradingWebsite.${{ env.PACKAGE_VERSION }}.zip
 
       - name: Push Build Information
         uses: OctopusDeploy/push-build-information-action@v3
