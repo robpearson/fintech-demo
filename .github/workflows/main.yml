@@ -43,7 +43,7 @@ jobs:
         uses: OctopusDeploy/push-build-information-action@v3
         
         with:
-          version: ${{ env.PACKAGE_VERSION }}
+          version: 2024.6.5.1
           packages: |
             OctoFX.TradingWebsite
           
