@@ -36,7 +36,7 @@ step "provision-cloud-infrastructure" {
         worker_pool = "hosted-ubuntu"
 
         container {
-            feed = "docker-hub"
+            feed = "githug-container-registry"
             image = "octopusdeploylabs/terraform-workertools"
         }
 
