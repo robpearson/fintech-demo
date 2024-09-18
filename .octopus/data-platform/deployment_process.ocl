@@ -84,13 +84,32 @@ step "deploy-data-transformer-website" {
 
     action {
         action_type = "Octopus.Script"
-        is_disabled = true
         properties = {
-            Octopus.Action.Script.ScriptBody = "Write-Host \"Hello world\""
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
+            Octopus.Action.EnabledFeatures = "Octopus.Features.SubstituteInFiles"
+            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.Script.ScriptFileName = "hello.ps1"
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+            Octopus.Action.SubstituteInFiles.TargetFiles = "*.ps1"
         }
         worker_pool = "hosted-windows"
+
+        git_dependencies {
+            default_branch = "main"
+            git_credential_id = "GitCredentials-2207"
+            git_credential_type = "Library"
+            repository_uri = "https://github.com/robpearson/DataEngineeringSqlScripts.git"
+        }
+
+        packages "RandomQuotes" {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "RandomQuotes"
+            properties = {
+                Extract = "True"
+                Purpose = ""
+                SelectionMode = "immediate"
+            }
+        }
     }
 }
 
