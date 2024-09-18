@@ -66,6 +66,11 @@ step "run-an-azure-script" {
         }
         worker_pool = "hosted-ubuntu"
 
+        container {
+            feed = "githug-container-registry"
+            image = "octopusdeploy/worker-tools:6.3.0-ubuntu.22.04"
+        }
+
         git_dependencies {
             default_branch = "main"
             git_credential_id = "GitCredentials-2207"
