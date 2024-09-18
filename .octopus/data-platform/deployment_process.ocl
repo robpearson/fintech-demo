@@ -68,7 +68,8 @@ step "run-an-azure-script" {
 
         git_dependencies {
             default_branch = "main"
-            git_credential_type = "Anonymous"
+            git_credential_id = "GitCredentials-2207"
+            git_credential_type = "Library"
             repository_uri = "https://github.com/robpearson/DataEngineeringSqlScripts.git"
         }
     }
