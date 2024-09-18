@@ -94,28 +94,21 @@ step "deploy-data-transformer-website" {
     }
 }
 
-step "email-stakeholders" {
-    name = "Email stakeholders"
+step "notify-team" {
+    name = "Notify team"
 
     action {
-        action_type = "Octopus.Email"
         environments = ["production"]
-        is_disabled = true
         properties = {
-            Octopus.Action.Email.Body = <<-EOT
-                Hi team,
-                
-                We have deployed Data Transformer to production. This release includse the following changes ... 
-                
-                // TODO: Loop through changes included in this release
-                
-                Thanks
-                
-                The data team
-                EOT
-            Octopus.Action.Email.Subject = "Deployed Data Transformer  to Production"
-            Octopus.Action.Email.To = "#{Client.Stakeholders}"
-            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-3887"
+            Octopus.Action.Template.Version = "15"
+            ssn_Channel = "production-notifications"
+            ssn_Color = "good"
+            ssn_HookUrl = "#{Slack.Webhook.Url}"
+            ssn_IconUrl = "https://octopus.com/content/resources/favicon.png"
+            ssn_Title = "#{Octopus.Project.Name} release #{Octopus.Release.Number} deployed to PROD."
+            ssn_Username = "Octopus Deploy"
         }
+        worker_pool = "hosted-windows"
     }
 }
