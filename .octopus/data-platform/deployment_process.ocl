@@ -67,7 +67,7 @@ step "run-an-azure-script" {
         worker_pool = "hosted-ubuntu"
 
         container {
-            feed = "githug-container-registry"
+            feed = "docker-hub"
             image = "octopusdeploy/worker-tools:6.3.0-ubuntu.22.04"
         }
 
