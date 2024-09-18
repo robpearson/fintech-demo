@@ -42,7 +42,7 @@ step "provision-cloud-infrastructure" {
 
         git_dependencies {
             default_branch = "main"
-            git_credential_id = "GitCredentials-2004"
+            git_credential_id = "GitCredentials-2207"
             git_credential_type = "Library"
             repository_uri = "https://github.com/robpearson/DataEngineeringTerraform.git"
         }
