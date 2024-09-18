@@ -8,6 +8,7 @@ step "production-approval" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Has this changed been approved?"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
@@ -67,8 +68,7 @@ step "run-an-azure-script" {
 
         git_dependencies {
             default_branch = "main"
-            git_credential_id = "GitCredentials-2004"
-            git_credential_type = "Library"
+            git_credential_type = "Anonymous"
             repository_uri = "https://github.com/robpearson/DataEngineeringSqlScripts.git"
         }
     }
@@ -110,6 +110,7 @@ step "email-stakeholders" {
                 EOT
             Octopus.Action.Email.Subject = "Deployed Data Transformer  to Production"
             Octopus.Action.Email.To = "#{Client.Stakeholders}"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
