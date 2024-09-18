@@ -1,0 +1,115 @@
+step "production-approval" {
+    name = "Production Approval"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["production"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Has this changed been approved?"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+        }
+    }
+}
+
+step "provision-cloud-infrastructure" {
+    name = "Update Data Platform infrastructure"
+
+    action {
+        action_type = "Octopus.TerraformApply"
+        is_disabled = true
+        properties = {
+            Octopus.Action.AzureAccount.Variable = "AzureAccount"
+            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
+            Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+            Octopus.Action.Terraform.AllowPluginDownloads = "True"
+            Octopus.Action.Terraform.AzureAccount = "True"
+            Octopus.Action.Terraform.FileSubstitution = "*.tf"
+            Octopus.Action.Terraform.GoogleCloudAccount = "False"
+            Octopus.Action.Terraform.ManagedAccount = "None"
+            Octopus.Action.Terraform.PlanJsonOutput = "False"
+            Octopus.Action.Terraform.RunAutomaticFileSubstitution = "True"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "hosted-ubuntu"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploylabs/terraform-workertools"
+        }
+
+        git_dependencies {
+            default_branch = "main"
+            git_credential_id = "GitCredentials-2004"
+            git_credential_type = "Library"
+            repository_uri = "https://github.com/robpearson/DataEngineeringTerraform.git"
+        }
+    }
+}
+
+step "run-an-azure-script" {
+    name = "Run an Azure Script"
+
+    action {
+        action_type = "Octopus.AzurePowerShell"
+        properties = {
+            Octopus.Action.Azure.AccountId = "octofx-azure-subscription"
+            Octopus.Action.EnabledFeatures = "Octopus.Features.SubstituteInFiles"
+            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.Script.ScriptFileName = "hello.ps1"
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+            Octopus.Action.SubstituteInFiles.TargetFiles = "*.ps1"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "hosted-ubuntu"
+
+        git_dependencies {
+            default_branch = "main"
+            git_credential_id = "GitCredentials-2004"
+            git_credential_type = "Library"
+            repository_uri = "https://github.com/robpearson/DataEngineeringSqlScripts.git"
+        }
+    }
+}
+
+step "deploy-data-transformer-website" {
+    name = "Run Custom DB CLI"
+
+    action {
+        action_type = "Octopus.Script"
+        is_disabled = true
+        properties = {
+            Octopus.Action.Script.ScriptBody = "Write-Host \"Hello world\""
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool = "hosted-windows"
+    }
+}
+
+step "email-stakeholders" {
+    name = "Email stakeholders"
+
+    action {
+        action_type = "Octopus.Email"
+        environments = ["production"]
+        is_disabled = true
+        properties = {
+            Octopus.Action.Email.Body = <<-EOT
+                Hi team,
+                
+                We have deployed Data Transformer to production. This release includse the following changes ... 
+                
+                // TODO: Loop through changes included in this release
+                
+                Thanks
+                
+                The data team
+                EOT
+            Octopus.Action.Email.Subject = "Deployed Data Transformer  to Production"
+            Octopus.Action.Email.To = "#{Client.Stakeholders}"
+        }
+    }
+}
