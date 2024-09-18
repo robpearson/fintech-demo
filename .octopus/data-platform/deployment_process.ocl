@@ -18,7 +18,6 @@ step "provision-cloud-infrastructure" {
 
     action {
         action_type = "Octopus.TerraformApply"
-        is_disabled = true
         properties = {
             Octopus.Action.AzureAccount.Variable = "AzureAccount"
             Octopus.Action.GitRepository.Source = "External"
