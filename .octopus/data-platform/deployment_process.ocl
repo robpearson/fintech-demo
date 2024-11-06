@@ -7,7 +7,7 @@ step "production-approval" {
         properties = {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Has this changed been approved?"
-            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/octopus-managers"
             Octopus.Action.RunOnServer = "false"
         }
     }
