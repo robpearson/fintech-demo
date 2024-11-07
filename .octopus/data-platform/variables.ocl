@@ -16,7 +16,15 @@ variable "GCP.Project" {
         environment = ["development", "test"]
     }
 
-    value "robpearson-demo" {
+    value "kubernetes-demo-198002" {
         environment = ["production"]
     }
+}
+
+variable "GCP.Zone" {
+    value "a" {}
+}
+
+variable "GCP.Region" {
+    value "australia-southeast1" {}
 }
