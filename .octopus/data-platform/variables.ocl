@@ -10,3 +10,13 @@ variable "GCP.Account" {
         environment = ["production"]
     }
 }
+
+variable "GCP.Project" {
+    value "robpearson-demo" {
+        environment = ["development", "test"]
+    }
+
+    value "robpearson-demo" {
+        environment = ["production"]
+    }
+}
