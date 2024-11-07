@@ -8,6 +8,26 @@ step "production-approval" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Has this changed been approved?"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/octopus-managers"
+            Octopus.Action.RunOnServer = "false"
         }
+    }
+}
+
+step "notify-team" {
+    name = "Notify team"
+
+    action {
+        environments = ["production"]
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-3887"
+            Octopus.Action.Template.Version = "15"
+            ssn_Channel = "#{Slack.Webhook.Channel}"
+            ssn_Color = "good"
+            ssn_HookUrl = "#{Slack.Webhook.Url}"
+            ssn_IconUrl = "https://octopus.com/content/resources/favicon.png"
+            ssn_Title = ":rocket: #{Octopus.Project.Name} release #{Octopus.Release.Number} deployed to #{Octopus.Environment.Name}!"
+            ssn_Username = "Octopus Deploy"
+        }
+        worker_pool = "hosted-windows"
     }
 }
