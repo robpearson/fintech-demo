@@ -20,7 +20,7 @@ step "deploy-custom-image-to-dataflow" {
         action_type = "Octopus.GoogleCloudScripting"
         properties = {
             Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
-            Octopus.Action.GoogleCloud.Project = "#{GCP.ProjectId}"
+            Octopus.Action.GoogleCloud.Project = "#{GCP.Project}"
             Octopus.Action.GoogleCloud.Region = "#{GCP.Region}"
             Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
             Octopus.Action.GoogleCloud.Zone = "#{GCP.Zone}"
