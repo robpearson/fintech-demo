@@ -4,4 +4,9 @@ variable "GCP.Account" {
     value "gcp-developer-playground" {
         environment = ["development", "test"]
     }
+
+    value "gcp-developer-playground" {
+        description = ""
+        environment = ["production"]
+    }
 }
