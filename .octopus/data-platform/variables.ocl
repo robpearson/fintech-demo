@@ -1,17 +1,7 @@
-variable "AzureAccount" {
-    type = "AzureAccount"
+variable "GCP.Account" {
+    type = "GoogleCloudAccount"
 
-    value "octofx-azure-subscription" {
-        environment = ["development", "test", "production"]
-    }
-}
-
-variable "Platform.Name" {
-    value "Finance Platform Test" {
-        environment = ["test"]
-    }
-
-    value "Finance Platform" {
-        environment = ["production"]
+    value "gcp-developer-playground" {
+        environment = ["development", "test"]
     }
 }
