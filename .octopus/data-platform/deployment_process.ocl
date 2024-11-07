@@ -31,3 +31,28 @@ step "notify-team" {
         worker_pool = "hosted-windows"
     }
 }
+
+step "deploy-custom-image-to-dataflow" {
+    name = "Deploy Custom Image to Dataflow"
+
+    action {
+        action_type = "Octopus.GoogleCloudScripting"
+        properties = {
+            Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
+            Octopus.Action.GoogleCloud.Project = "#{GCP.ProjectId}"
+            Octopus.Action.GoogleCloud.Region = "#{GCP.Region}"
+            Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
+            Octopus.Action.GoogleCloud.Zone = "#{GCP.Zone}"
+            Octopus.Action.Script.ScriptBody = "gcloud --version"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "hosted-ubuntu"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:6.3.0-ubuntu.22.04"
+        }
+    }
+}
