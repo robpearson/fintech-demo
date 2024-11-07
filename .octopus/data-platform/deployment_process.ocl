@@ -13,25 +13,6 @@ step "production-approval" {
     }
 }
 
-step "notify-team" {
-    name = "Notify team"
-
-    action {
-        environments = ["production"]
-        properties = {
-            Octopus.Action.Template.Id = "ActionTemplates-3887"
-            Octopus.Action.Template.Version = "15"
-            ssn_Channel = "#{Slack.Webhook.Channel}"
-            ssn_Color = "good"
-            ssn_HookUrl = "#{Slack.Webhook.Url}"
-            ssn_IconUrl = "https://octopus.com/content/resources/favicon.png"
-            ssn_Title = ":rocket: #{Octopus.Project.Name} release #{Octopus.Release.Number} deployed to #{Octopus.Environment.Name}!"
-            ssn_Username = "Octopus Deploy"
-        }
-        worker_pool = "hosted-windows"
-    }
-}
-
 step "deploy-custom-image-to-dataflow" {
     name = "Deploy Custom Image to Dataflow"
 
@@ -54,5 +35,24 @@ step "deploy-custom-image-to-dataflow" {
             feed = "docker-hub"
             image = "octopusdeploy/worker-tools:6.3.0-ubuntu.22.04"
         }
+    }
+}
+
+step "notify-team" {
+    name = "Notify team"
+
+    action {
+        environments = ["production"]
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-3887"
+            Octopus.Action.Template.Version = "15"
+            ssn_Channel = "#{Slack.Webhook.Channel}"
+            ssn_Color = "good"
+            ssn_HookUrl = "#{Slack.Webhook.Url}"
+            ssn_IconUrl = "https://octopus.com/content/resources/favicon.png"
+            ssn_Title = ":rocket: #{Octopus.Project.Name} release #{Octopus.Release.Number} deployed to #{Octopus.Environment.Name}!"
+            ssn_Username = "Octopus Deploy"
+        }
+        worker_pool = "hosted-windows"
     }
 }
