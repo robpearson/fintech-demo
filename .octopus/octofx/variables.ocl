@@ -67,3 +67,17 @@ variable "OctopusPrintEvaluatedVariables" {
 variable "OctopusPrintVariables" {
     value "False" {}
 }
+
+variable "OctoFx.Cluster.Namespace" {
+    value "OctoFX.FrontEnd.Dev" {
+        environment = ["development"]
+    }
+
+    value "OctoFX.FrontEnd.Test" {
+        environment = ["test"]
+    }
+
+    value "OctoFX.FrontEnd.Prod" {
+        environment = ["production"]
+    }
+}
