@@ -68,16 +68,28 @@ variable "OctopusPrintVariables" {
     value "False" {}
 }
 
+variable "OctoFx.WebApp.HttpsPort" {
+    value "3000" {}
+}
+
+variable "OctoFx.WebApp.HttpPort" {
+    value "2999" {}
+}
+
+variable "OctoFx.WebApp.ServiceName" {
+    value "octofx-frontend" {}
+}
+
 variable "OctoFx.Cluster.Namespace" {
-    value "OctoFX.FrontEnd.Dev" {
+    value "octofx-frontend-dev" {
         environment = ["development"]
     }
 
-    value "OctoFX.FrontEnd.Test" {
+    value "octofx-frontend-test" {
         environment = ["test"]
     }
 
-    value "OctoFX.FrontEnd.Prod" {
+    value "octofx-frontend-prod" {
         environment = ["production"]
     }
 }
