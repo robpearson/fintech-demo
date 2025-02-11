@@ -86,6 +86,39 @@ step "deploy-rate-service" {
     }
 }
 
+step "check-for-k8s-namespace" {
+    name = "Check for K8s namespace"
+    properties = {
+        Octopus.Action.TargetRoles = "demo-k8s-cluster"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesRunScript"
+        properties = {
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                # Get existing namespaces
+                Write-Host "Retrieving namespaces ..."
+                $namespaces = (kubectl get namespaces -o JSON | ConvertFrom-Json)
+                
+                # Check to see if namespace exists
+                if ($null -eq ($namespaces.Items | Where-Object {$_.metadata.name -eq $OctopusParameters["OctoFx.Cluster.Namespace"]}))
+                {
+                	# Create the namespace
+                    Write-Host "Namespace #{OctoFx.Cluster.Namespace} doesn't exist, creating ..."
+                    kubectl create namespace $OctopusParameters["OctoFx.Cluster.Namespace"]
+                }
+                else
+                {
+                	Write-Host "Namespace #{OctoFx.Cluster.Namespace} already exists, moving on ..."
+                }
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+        worker_pool = "azure-worker-pool"
+    }
+}
+
 step "deploy-modern-frontend" {
     name = "Deploy Modern Frontend"
     properties = {
