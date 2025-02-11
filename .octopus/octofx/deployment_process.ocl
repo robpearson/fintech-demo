@@ -121,9 +121,21 @@ step "deploy-modern-frontend" {
                     type: main
                 
                 EOT
+            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "Inline"
         }
         worker_pool_variable = ""
+
+        packages "octofx-frontend" {
+            acquisition_location = "NotAcquired"
+            feed = "githug-container-registry"
+            package_id = "octopussolutionsengineering/octofx-frontend"
+            properties = {
+                Extract = "False"
+                Purpose = "DockerImageReference"
+                SelectionMode = "immediate"
+            }
+        }
     }
 }
 
