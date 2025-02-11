@@ -93,3 +93,11 @@ variable "OctoFx.Cluster.Namespace" {
         environment = ["production"]
     }
 }
+
+variable "Octopus.Azure.Account" {
+    type = "AzureAccount"
+
+    value "octopetshop-azure-subscription" {
+        description = ""
+    }
+}
