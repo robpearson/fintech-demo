@@ -117,3 +117,29 @@ variable "RandomQuotes.WorkerPool" {
 
     value "azure-worker-pool" {}
 }
+
+variable "Dealership.WebApp.HttpsPort" {
+    value "3001" {}
+}
+
+variable "Dealership.WebApp.HttpPort" {
+    value "3000" {}
+}
+
+variable "Dealership.Cluster.Namespace" {
+    value "dealership-dev" {
+        environment = ["development"]
+    }
+
+    value "dealership-test" {
+        environment = ["test"]
+    }
+
+    value "dealership-prod" {
+        environment = ["production"]
+    }
+}
+
+variable "Dealership.WebApp.ServiceName" {
+    value "dealership-frontend" {}
+}
