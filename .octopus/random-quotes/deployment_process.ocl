@@ -83,9 +83,21 @@ step "deploy-front-end" {
                     type: main
                 
                 EOT
+            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "Inline"
         }
         worker_pool_variable = ""
+
+        packages "octofx-frontend" {
+            acquisition_location = "NotAcquired"
+            feed = "githug-container-registry"
+            package_id = "robpearson/octofx-frontend"
+            properties = {
+                Extract = "False"
+                Purpose = "DockerImageReference"
+                SelectionMode = "immediate"
+            }
+        }
     }
 }
 
