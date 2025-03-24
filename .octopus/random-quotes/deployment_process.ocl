@@ -34,7 +34,7 @@ step "update-database" {
 }
 
 step "deploy-application" {
-    name = "Deploy application"
+    name = "Deploy microservice"
 
     action {
         action_type = "Octopus.Script"
@@ -45,6 +45,47 @@ step "deploy-application" {
             OctopusUseBundledTooling = "False"
         }
         worker_pool = "hosted-ubuntu"
+    }
+}
+
+step "deploy-front-end" {
+    name = "Deploy front-end"
+    properties = {
+        Octopus.Action.TargetRoles = "kubernetes"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployRawYaml"
+        properties = {
+            Octopus.Action.Kubernetes.DeploymentTimeout = "180"
+            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
+            Octopus.Action.Kubernetes.ServerSideApply.Enabled = "True"
+            Octopus.Action.Kubernetes.ServerSideApply.ForceConflicts = "True"
+            Octopus.Action.KubernetesContainers.CustomResourceYaml = <<-EOT
+                apiVersion: v1
+                kind: Service
+                metadata:
+                  name: '#{Dealership.WebApp.ServiceName}'
+                  namespace: '#{Dealership.Cluster.Namespace}'
+                spec:
+                  type: LoadBalancer
+                  ports:
+                    - name: http
+                      port: 80
+                      targetPort: #{Dealership.WebApp.HttpPort}
+                      protocol: TCP
+                    - name: https
+                      port: 443
+                      targetPort: #{Dealership.WebApp.HttpsPort}
+                      protocol: TCP
+                  selector:
+                    component: g-web
+                    type: main
+                
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+        }
+        worker_pool_variable = ""
     }
 }
 
